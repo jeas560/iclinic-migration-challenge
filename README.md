@@ -14,22 +14,71 @@ Os arquivos de dados médicos fictícios disponibilizados são:
 - Os dados devem ser considerados dados sensíveis e é necessário manter seu conteúdo o mais próximo possível do original.
 - Os dados que não fizerem parte do cadastro, do prontuário e do agendamento podem ser desconsiderados na conversão.
 - Todo o processo de análise e de relacionamento dos dados deve ser documentado em um relatório, no qual deve descrever as etapas e ferramentas utilizadas de forma detalhada, bem como, toda informação que julgar relevante.
-- Este relatório deve estar em formato texto, markdown ou pdf, nomeado como relatorio.txt, relatorio.md ou relatorio.pdf, respectivamente.
+- O relatório está em formato markdown no link a seguir [relatorio.md](relatorio.md).
 - A conversão dos dados deve gerar arquivos CSV, de acordo com a documentação que descreve o padrão iClinic, disponível em https://docs.iclinic.com.br. Além disso, os arquivos devem ser gerados com o conjunto de caracteres UTF-8.
 - Caso sejam criados arquivos intermediários, para realização da conversão dos dados, estes também devem ser anexados juntos com seus respectivos scripts.
 - Também deverá ser gerado um documento, nomeado README.md (o presente documento), contendo as instruções de como executar o(s) script(s) Python&reg;, a descrição dos arquivos intermediários, caso existam, e link para o relatório.
 
-### Recursos disponibilizados
+### Recursos solicitados e disponibilizados
 
- - Disponibilizar a solução do desafio em um repositório GitHub;
- - Que o código do desafio seja feito em Python 3+;
- - Dados convertidos no formato CSV;
- - Relatório com a descrição das etapas e ferramentas utilizadas;
- - Passo a passo de como executar o script de conversão;
- - Clareza no código;
- - Gerenciamento de dependências;
- - Commits semânticos.
- - Utilizar as bibliotecas Pandas e de banco de dados;
- - Princípios SOLID;
+- Disponibilizar a solução do desafio em um repositório GitHub;
+- Que o código do desafio seja feito em Python 3+;
+- Dados convertidos no formato CSV;
+- Relatório com a descrição das etapas e ferramentas utilizadas;
+- Passo a passo de como executar o script de conversão;
+- Clareza no código;
+- Gerenciamento de dependências;
+- Commits semânticos.
+- Utilizar as bibliotecas Pandas e de banco de dados;
+- Princípios SOLID;
+
+Neste repositório você encontrará os seguintes documentos:
+
+- requirements.txt: arquivo contendo o nome dos pacotes que precisam ser instalados utilizando pip
+- desafio-base1: Pasta contendo os arquivos csv de entrada
+- importacao-iclinic: Pasta contendo os arquivos csv de referencia para o padrão iClinic
+- desafio_base1_agenda.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo agenda.csv na pasta desafio-base1
+- desafio_base1_pacientes.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo pacientes.csv na pasta desafio-base1
+- relatorio.md: relatório descrevendo as etapas e ferramentas utilizadas na resolução do desafio de forma detalhada
+
+# Instruções de uso
+
+Para utilizar os dados e códigos neste repositório, siga os seguintes passos.
+
+## Instalando o ambiente virtual e os pacotes Python
+
+Criando um ambiente virtual na pasta do projeto a fim de isolar o nosso projeto em Python:
+
+```sh
+virtualenv -p python3 venv
+```
+Ativando o ambiente virtual:
+```sh
+source venv/bin/activate
+```
+Instalando os pacotes necessários:
+```sh
+pip install -r requirements.txt
+```
+
+## EDA (Exploratory Data Analysis)
+Para ver o EDA no seridor local do Jupyter:
+```sh
+jupyter-notebook desafio_base1_agenda.ipynb
+```
+também pode ser aberto no VScode, caso tiver as extensões adequadas instaladas.
+Em seguida vá em `Cell > Run All` para rodar todos os comandos.
+
+## Limpeza de dados
+Para realizar a limpeza dos dados deve ser realizado o seguinte processo:
+```sh
+python data_cleaning.py
+```
+Output esperado:
+```sh
+Original data...
+```
+Terão sido criados os arquivos 'event_scheduling.csv', 'patient.csv'.
+
 ___
-Jonathan Silva.
+Jonathan Silva
