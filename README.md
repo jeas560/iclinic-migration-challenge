@@ -1,4 +1,5 @@
 # Desafio iClinic
+
 O desafio consistiu em analisar e desenvolver scripts de conversão de dados médicos fictícios para o padrão iClinic, tratando dados sensíveis e não padronizados.
 
 ### Solução
@@ -37,6 +38,7 @@ Neste repositório você encontrará os seguintes documentos:
 - requirements.txt: arquivo contendo o nome dos pacotes que precisam ser instalados utilizando pip
 - desafio-base1: Pasta contendo os arquivos csv de entrada
 - importacao-iclinic: Pasta contendo os arquivos csv de referencia para o padrão iClinic
+- desafio_base1_evolucao.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo evolucao.csv na pasta desafio-base1
 - desafio_base1_agenda.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo agenda.csv na pasta desafio-base1
 - desafio_base1_pacientes.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo pacientes.csv na pasta desafio-base1
 - relatorio.md: relatório descrevendo as etapas e ferramentas utilizadas na resolução do desafio de forma detalhada
@@ -51,7 +53,7 @@ Criando um ambiente virtual na pasta do projeto a fim de isolar o nosso projeto 
 
 ```sh
 virtualenv -p python3 venv
-```
+``` 
 Ativando o ambiente virtual:
 ```sh
 source venv/bin/activate
@@ -64,21 +66,21 @@ pip install -r requirements.txt
 ## EDA (Exploratory Data Analysis)
 Para ver o EDA no seridor local do Jupyter:
 ```sh
+jupyter-notebook desafio_base1_pacientes.ipynb
 jupyter-notebook desafio_base1_agenda.ipynb
+jupyter-notebook desafio_base1_evolucao.ipynb
+
 ```
 também pode ser aberto no VScode, caso tiver as extensões adequadas instaladas.
 Em seguida vá em `Cell > Run All` para rodar todos os comandos.
 
 ## Limpeza de dados
-Para realizar a limpeza dos dados deve ser realizado o seguinte processo:
-```sh
-python data_cleaning.py
-```
-Output esperado:
-```sh
-Original data...
-```
-Terão sido criados os arquivos 'event_scheduling.csv', 'patient.csv'.
+A limpeza dos dados foi realizada nos Notebook jupyter acima, pelo que, após rodar todos os comandos terão sido criados os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv'.
+
+# Comentário final
+
+Esperamos poder concluir o tratamento dos dadds do `desafio-base2` em breve.
+Esperamos também que o arquivo README.md e o arquivo relatorio.md estejam o suficiente mente claros para seu entendimento.
 
 ___
 Jonathan Silva
