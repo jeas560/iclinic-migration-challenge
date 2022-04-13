@@ -4,3 +4,8 @@
 # Environments
 venv/
 
+# output files
+event_record.csv
+event_scheduling.csv
+physician_names.csv
+patient.csv
