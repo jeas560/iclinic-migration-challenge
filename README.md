@@ -80,7 +80,7 @@ A limpeza dos dados foi realizada nos Notebook jupyter acima, pelo que, após ro
 # Comentário final
 
 Esperamos poder concluir o tratamento dos dadds do `desafio-base2` em breve.
-Esperamos também que o arquivo README.md e o arquivo relatorio.md estejam o suficiente mente claros para seu entendimento.
+Esperamos também que o arquivo README.md e o arquivo relatorio.md estejam o suficientemente claros para seu entendimento.
 
 ___
 Jonathan Silva
