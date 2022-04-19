@@ -12,13 +12,13 @@ Os arquivos de dados médicos fictícios disponibilizados são:
 
 #### Detalhes:
 
-- Os dados devem ser considerados dados sensíveis e é necessário manter seu conteúdo o mais próximo possível do original.
-- Os dados que não fizerem parte do cadastro, do prontuário e do agendamento podem ser desconsiderados na conversão.
-- Todo o processo de análise e de relacionamento dos dados deve ser documentado em um relatório, no qual deve descrever as etapas e ferramentas utilizadas de forma detalhada, bem como, toda informação que julgar relevante.
+- Os dados serão considerados dados sensíveis e seu conteúdo será mantido o mais próximo possível do original.
+- Os dados que não fizerem parte do *cadastro*, do *prontuário* e do *agendamento* serão desconsiderados na conversão.
+- Todo o processo de análise e de relacionamento dos dados será documentado em um relatório, no qual estará descrito todas as etapas e ferramentas utilizadas de forma detalhada, bem como, toda informação julgada relevante.
 - O relatório está em formato markdown no link a seguir [relatorio.md](relatorio.md).
-- A conversão dos dados deve gerar arquivos CSV, de acordo com a documentação que descreve o padrão iClinic, disponível em https://docs.iclinic.com.br. Além disso, os arquivos devem ser gerados com o conjunto de caracteres UTF-8.
-- Caso sejam criados arquivos intermediários, para realização da conversão dos dados, estes também devem ser anexados juntos com seus respectivos scripts.
-- Também deverá ser gerado um documento, nomeado README.md (o presente documento), contendo as instruções de como executar o(s) script(s) Python&reg;, a descrição dos arquivos intermediários, caso existam, e link para o relatório.
+- A conversão dos dados gerará arquivos CSV, de acordo com a documentação que descreve o padrão iClinic, disponível em https://docs.iclinic.com.br. Além disso, os arquivos serão gerados com o conjunto de caracteres UTF-8.
+- Caso sejam criados arquivos intermediários para realização da conversão dos dados, também serão anexados juntos com seus respectivos scripts.
+- Também será gerado um documento, nomeado README.md (o presente documento), contendo as instruções de como executar o(s) script(s) Python&reg;, a descrição dos arquivos intermediários, caso existam, e link para o relatório.
 
 ### Recursos solicitados e disponibilizados
 
@@ -35,13 +35,21 @@ Os arquivos de dados médicos fictícios disponibilizados são:
 
 Neste repositório você encontrará os seguintes documentos:
 
+- README.md: arquivo contendo as instruções de como executar o(s) script(s) Python&reg;
 - requirements.txt: arquivo contendo o nome dos pacotes que precisam ser instalados utilizando pip
-- desafio-base1: Pasta contendo os arquivos csv de entrada
+- desafio-base1: Pasta contendo os arquivos csv de entrada da base1
+- desafio-base1-output: Pasta que irá conter os arquivos de saída referentes à base1
+- desafio-base2: Pasta contendo os arquivos de entrada da base2
+- desafio-base2-output: Pasta que irá conter os arquivos de saída referentes à base2
 - importacao-iclinic: Pasta contendo os arquivos csv de referencia para o padrão iClinic
 - desafio_base1_evolucao.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo evolucao.csv na pasta desafio-base1
 - desafio_base1_agenda.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo agenda.csv na pasta desafio-base1
 - desafio_base1_pacientes.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo pacientes.csv na pasta desafio-base1
+- desafio_base2_evolucao.ipynb: O Notebook Jupyter contendo a análise de dados para geração do arquivo event_record.csv
+- desafio_base2_agenda.ipynb: O Notebook Jupyter contendo a análise de dados para a geração do arquivo event_scheduling.csv
+- desafio_base2_pacientes.ipynb: O Notebook Jupyter contendo a análise de dados para a geração do arquivo patient.csv
 - relatorio.md: relatório descrevendo as etapas e ferramentas utilizadas na resolução do desafio de forma detalhada
+- EER_Diagram_dbase03.pdf: Diagrama das tabelas na base de dados Mysql dbase03.sql
 
 # Instruções de uso
 
@@ -69,17 +77,21 @@ Para ver o EDA no seridor local do Jupyter:
 jupyter-notebook desafio_base1_pacientes.ipynb
 jupyter-notebook desafio_base1_agenda.ipynb
 jupyter-notebook desafio_base1_evolucao.ipynb
+jupyter-notebook desafio_base2_planos.ipynb
+jupyter-notebook desafio_base2_pacientes.ipynb
+jupyter-notebook desafio_base2_agenda.ipynb
+jupyter-notebook desafio_base2_evolucao.ipynb
 
 ```
 também pode ser aberto no VScode, caso tiver as extensões adequadas instaladas.
 Em seguida vá em `Cell > Run All` para rodar todos os comandos.
 
 ## Limpeza de dados
-A limpeza dos dados foi realizada nos Notebook jupyter acima, pelo que, após rodar todos os comandos terão sido criados os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv'.
+A limpeza dos dados foi realizada nos Notebook jupyter acima, pelo que, após rodar todos os comandos terão sido criados os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv' em suas respectivas pastas de base1 ou base2.
 
 # Comentário final
 
-Esperamos poder concluir o tratamento dos dadds do `desafio-base2` em breve.
+Estamos trabalhando para poder concluir o tratamento dos dados do `desafio-base2`.
 Esperamos também que o arquivo README.md e o arquivo relatorio.md estejam o suficientemente claros para seu entendimento.
 
 ___
