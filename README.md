@@ -30,7 +30,7 @@ Os arquivos de dados médicos fictícios disponibilizados são:
 - Clareza no código;
 - Gerenciamento de dependências;
 - Commits semânticos.
-- Utilizar as bibliotecas Pandas e de banco de dados;
+- Utilizar as bibliotecas Pandas e de banco de dados sqlalchemy;
 - Princípios SOLID;
 
 Neste repositório você encontrará os seguintes documentos:
@@ -45,6 +45,7 @@ Neste repositório você encontrará os seguintes documentos:
 - desafio_base1_evolucao.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo evolucao.csv na pasta desafio-base1
 - desafio_base1_agenda.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo agenda.csv na pasta desafio-base1
 - desafio_base1_pacientes.ipynb: O Notebook Jupyter contendo a análise de dados do arquivo pacientes.csv na pasta desafio-base1
+- desafio_base2_planos_e_medicos: O Notebook Jupyter contendo a análise de dados para a geração dos arquivos planos.csv e physician_names.csv
 - desafio_base2_evolucao.ipynb: O Notebook Jupyter contendo a análise de dados para geração do arquivo event_record.csv
 - desafio_base2_agenda.ipynb: O Notebook Jupyter contendo a análise de dados para a geração do arquivo event_scheduling.csv
 - desafio_base2_pacientes.ipynb: O Notebook Jupyter contendo a análise de dados para a geração do arquivo patient.csv
@@ -77,7 +78,7 @@ Para ver o EDA no seridor local do Jupyter:
 jupyter-notebook desafio_base1_pacientes.ipynb
 jupyter-notebook desafio_base1_agenda.ipynb
 jupyter-notebook desafio_base1_evolucao.ipynb
-jupyter-notebook desafio_base2_planos.ipynb
+jupyter-notebook desafio_base2_planos_e_medicos.ipynb
 jupyter-notebook desafio_base2_pacientes.ipynb
 jupyter-notebook desafio_base2_agenda.ipynb
 jupyter-notebook desafio_base2_evolucao.ipynb
