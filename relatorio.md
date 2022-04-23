@@ -1,75 +1,80 @@
 # Relatorio iClinic
 
-## EDA (Exploratory Data Analysis)
+Neste relatório serão apresentadas as tomadas de decisão, etapas e ferramentas, assim como dificuldades encontradas na resolução do desafio.
 
-Comecemos com a análise da base de dados na pasta 'desafio-base1':
+Será apresentada a análise e tratamento de cada base de dados, começando com 'desafio-base1' e finalizando com 'desafio-base2'.
 
-Iremos dividir nosso relatório em duas grandes partes:
-- Entendendimento o problema
-- Exploração e tratamento dos dados de cada arquivo na pasta 'desafio-base1'
+***
+## Entendendimento do problema
+***
 
-Até o momento não foi possível realizar a análise do 'desafio-base2' por falta de tempo, pelo que não foi colocado neste repositório.
+Têm-se uma base de dados médica do Dr. José e outra da Dra. Ana, Dr. Carlos e Dr. Gustavo, ambas precisam ser transformadas para o padrão iClinic disponível em https://docs.iclinic.com.br.
 
-## O problema
+Será feita uma exploração das bases de dados e comparação com o padrão solicitado através de bibliotecas Python&reg;.
 
-Temos uma base de dados médica do Dr. José, que precisa ser transformada para o padrão iClinic.
+***
+## Tratamento da base de dados 'desafio-base1' 
+***
 
-Então iremos explorar a base de dados comparando com o padrão solicitado, utilizaremos algumas ferramentas para transformar os dados do arquivo de entrada no formato solicitado.
+O tratamento dos dados da base de dados 'desafio-base1' iniciou com arquivo `desafio-base1/pacientes.csv` por ser o que possuí maior volume de informações.
+Em seguida serão analisados os próximos arquivos.
 
-Começaremos a análies do arquivo `desafio-base1/pacientes.csv` por ser o que tem maiores informações e em seguida iremos analisando os próximos arquivos.
+> É necessário manter a sequencia de análise proposta para o correto funcionamento das próximas scripts.
 
-Gostaria de comentar que é necessário manter a sequencia de análise dos arquivos proposta pois é as próximas análises dependem da informação tratada deste primeio arquivo.
+## Tratamento do arquivo 'pacientes.csv'
+***
 
-## Tratamento dos dados do arquivo 'pacientes.csv'
-
-Nesta seção trabalharemos no arquivo `desafio-base1_pacientes.ipynb`.
+A script correspondente ao tratamento dos dados pode ser encontrada no arquivo `desafio-base1_pacientes.ipynb`.
 
 ## Exploração inicial e primeiras impressões
 
-Nesta seção iremos realizar uma exploração inicial do dataset.
+Nesta seção será apresentada a exploração inicial dos dados num caderno Jupyter ou [Jupyter Notebook](https://jupyter.org/).
 
-Esta exploração foi realizada num [Notebook Jupyter](https://jupyter.org/).
+Ao abrir o caderno `desafio-base1_pacientes.ipynb` será possível ver os códigos utilizados para o tratamento dos dados.
 
-### Importando Bibliotecas
+### Importação das bibliotecas
 
-Começaremos importando as bibliotecas que serão utlizadas por padrão:
-
-- A biblioteca [NumPy](https://numpy.org/) é fundamental para qualquer tipo de computação científica em Python
-- A biblioteca [pandas](https://pandas.pydata.org/) é a nossa ferramenta pricipal para análise e manipulação de dados
+Na primeira célula é realizada a importação das bibliotecas utilizadas:
 
 ```python
 import numpy as np
 import pandas as pd
 ```
 
-### Lendo e análise inicial dos dados de entrada
+A seguir uma breve apresentação de cada biblioteca:
 
-Como temos dados num arquivo '.csv', utilizaremos `pandas` para ler os dados e darmos uma primeira olhada em como eles estão dispostos.
-Assim, utilizaremos a função `read_csv()` do `pandas`, com os seguintes parâmetros: `parse_dates=['DataNasc'], encoding='iso-8859-1', quotechar='"', delimiter='|'`, onde cada um significa:
+- A biblioteca [NumPy](https://numpy.org/) é fundamental para qualquer tipo de computação científica em Python
+- A biblioteca [pandas](https://pandas.pydata.org/) é a ferramenta pricipal para análise e manipulação de dados
 
-- `parse_dates=['DataNasc']`: Fazer a importação da coluna `'DataNasc'` como `data hora`
+### Leitura e tratamento inicial dos dados de entrada
+
+Na próxima célula é realizada a leitura do arquivo '.csv' através da biblioteca `pandas` utilizando a função `read_csv()`, como a seguir:
+
+```python
+df = pd.read_csv('desafio-base1/pacientes.csv', parse_dates=['DataNasc'], encoding='iso-8859-1',quotechar='"', delimiter='|')
+```
+Cada parâmetro tem o seguinte significado:
+
+- `parse_dates=['DataNasc']`: Fazer a importação da coluna `'DataNasc'` como tipo `data hora`
 - `encoding='iso-8859-1'`: Tipo de `encoding` do arquivo sendo lido
 - `quotechar='"'`: O caracter usado para denotar o inicio e fim de um item entre aspas
 - `delimiter='|'`: delimitador utilizado na escrita do arquivo
 
-Em seguida será printada na tela o `shape` que é de 783x18, ou seja, têm-se 738 linhas (registros), além da linha correspondente ao cabeçalho do arquivo `.csv`, e 18 colunas (recursos).
+<!-- Em seguida será printada na tela o `shape` que é de 783x18, ou seja, têm-se 738 linhas (registros), além da linha correspondente ao cabeçalho do arquivo `.csv`, e 18 colunas (recursos). -->
 
-```python
-df = pd.read_csv('desafio-base1/pacientes.csv', parse_dates=['DataNasc'], encoding='iso-8859-1',quotechar='"', delimiter='|')
-df.shape
-```
+### Visualização dos dados
 
-### Vendo os dados
+Nas próximas duas células é realizada a visualização inicial dos dados.
 
-Usando o método `head()` do `pandas` com um argumento `3` nele, podemos dar uma olhada nos primeiros `3` registros da tabela interia.
+Usando o método `head()` do `pandas` com um argumento `5` nele é possível visualizar os primeiros `5` registros do Dataframe.
     
-O `.T` significa `Transposição`, desta forma visualizaremos as linhas como colunas e vice-versa.
+O `.T` significa `Transposição`, desta forma as linhas serão visualizadas como colunas e vice-versa.
 
-O método `info()` do `pandas` nos dará um resumo dos dados, uma informação interessante é o tipo de dado de cada recurso.
+O método `info()` do `pandas` apresenta um resumo dos dados no Dataframe, uma informação interessante é o tipo de dado de cada recurso.
 
-## Limpando e tratando os dados
+## Limpeza e tratamento dos dados
 
-Nesta seção iremos realizar a limpeza dos dados.
+A seguir será realizada a limpeza e tratamento dos dados.
 
 ### Valores ausentes
 
@@ -142,9 +147,7 @@ df['CEP'] = [df['CEP'][i] if x == True else df['CEP'][i][:5]+'-'+df['CEP'][i][5:
 
 Repare que os valores `NaN` permanecem inalterados.
 
-<a id="ancora1"></a>
-
-### Tratando o recurso "EstadoCivil"
+### Tratando o recurso "EstadoCivil" <a id="ancora1"></a>
 
 Neste recurso precisamos antes de tudo saber quais as categorias utilizadas para classificar o estado civil do paciente, assim, utilizaremos a seguinte linha de código:
 
