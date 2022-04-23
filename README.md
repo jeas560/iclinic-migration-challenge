@@ -73,7 +73,7 @@ pip install -r requirements.txt
 ```
 
 ## EDA (Exploratory Data Analysis)
-Para ver o EDA no seridor local do Jupyter:
+Para ver o EDA no servidor local do Jupyter:
 ```sh
 jupyter-notebook desafio_base1_pacientes.ipynb
 jupyter-notebook desafio_base1_agenda.ipynb
@@ -84,16 +84,16 @@ jupyter-notebook desafio_base2_agenda.ipynb
 jupyter-notebook desafio_base2_evolucao.ipynb
 
 ```
-também pode ser aberto no VScode, caso tiver as extensões adequadas instaladas.
-Em seguida vá em `Cell > Run All` para rodar todos os comandos.
+Também pode ser aberto no VScode, caso tiver as extensões adequadas instaladas.
+Em seguida vá em `Cell > Run All` para rodar todos os comandos do caderno.
 
 ## Limpeza de dados
-A limpeza dos dados foi realizada nos Notebook jupyter acima, pelo que, após rodar todos os comandos terão sido criados os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv' em suas respectivas pastas de base1 ou base2.
+A limpeza dos dados foi realizada nos cadernos jupyter acima citados, pelo que, após rodar todos os comandos terão sido criados os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv' em suas respectivas pastas de outpu da base1 ou base2.
 
 # Comentário final
 
-Estamos trabalhando para poder concluir o tratamento dos dados do `desafio-base2`.
-Esperamos também que o arquivo README.md e o arquivo relatorio.md estejam o suficientemente claros para seu entendimento.
+Estou trabalhando para poder concluir o tratamento dos dados do `desafio-base2`.
+Espero que os arquivos README.md e relatorio.md estejam o suficientemente claros para seu entendimento.
 
 ___
 Jonathan Silva
