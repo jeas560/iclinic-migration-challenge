@@ -100,59 +100,78 @@ Como comentado anteriormente, é possível ver que muitos dos recursos no arquiv
 
 O tratamento destes recursos será realizado em seguida, já que é relativamente simples. 
 
-A mudança nos nomes entre os recursos equivalentes será realizada no final, já que não é relevante para este início.
+A mudança nos nomes entre os recursos equivalentes será realizada no final, já que não é relevante para o tratamento inicial.
 
-Uns recursos precisarão de uma atenção ou tratamento mais detalhada, são estes: "Telefone", "TipoTelefone" e "Endereco".
+Alguns dos recursos precisarão de uma atenção ou tratamento mais detalhada, são estes: "Telefone", "TipoTelefone" e "Endereco".
 
 Além desses recursos, no arquivo lido tem informação adicional que pode ser colocado na coluna "observation", mas devido ao tempo não foi possível de ser concluído, são estas "Conjuge", "ProfissaoConjuge"
 
-### Tratando o recurso "Sexo"
+### Tratando o recurso 'Sexo'
  
-Neste recurso precisaremos apenas trocar os caractéres 'M' por 'm' e 'F' por 'f', entretanto, utizaremos um procedimento com `list comprehension` para chegar neste fim. 
+Inicialmente foram testadas algumas ideias mais simples, mas não resultaram sendo corretas.
 
-É possível ver uns comentários nessa célula, pois foi realizada uma tentativa utilizando os métodos `.astype(str).str.lower()` entretanto, desta forma o valor `NaN` era substituido por uma `string` equivalente, o que podia trazer informação errada na hora de verificar os dados.
+A primeira consistiu em transformar as strings dentro da coluna 'Sexo' em minúscula:
+```python
+df['Sexo'] = df['Sexo'].astype(str).str.lower()
+```
+Porém, os valores 'NaN' eram modificados para 'nan', perdendo o seu significado original.
 
-Com o código a seguir é possível realizar esta mudança e não mudar o valor simbólico do `NaN`:
-
+Outra alternativa foi utilizar list comprehension do próprio python, conseguindo contornar o problema de modificar o valor 'NaN':
 ```python
 df['Sexo'] = ['m' if x == 'M' else 'f' if x == 'F' else np.nan for x in df['Sexo']]
-
+#%timeit 594 µs ± 23.4 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 ```
 
-### Tratando o recurso "Estado"
+Finalmente, a seguinte alternativa foi a utilizada pois apresentava uma maior velocidade de processamento quando comparada a anterior.
+```python
+df['Sexo'] = df['Sexo'].replace(sexo)
+#%timeit 694 µs ± 14.4 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+```
+sendo:
+```python
+sexo = {
+    'M': 'm', 
+    'F': 'f'
+}
+```
 
-Neste caso, apenas verificaremos se este recurso possui seus registros de forma correta, ou seja só duas letras em maiúscula para cada Estado brasileiro:
+### Tratando o recurso 'Estado'
+
+A fim de verificar se a coluna continha apenas os valores das siglas de cada estado, assim, foi criado uma lista contendo os valores possíveis:
 
 ```python
-teste = df['Estado'].str.contains(r'\b[A-Z]{2}')
-print(teste.value_counts())
-
+uf = [np.nan,'RO', 'AC', 'AM', 'RR', 'PA', 'AP', 'TO', 'MA', 'PI', 'CE', 'RN', 'PB', 'PE', 'AL', 'SE', 'BA', 'MG', 'ES', 'RJ', 'SP', 'PR', 'SC', 'RS', 'MS', 'MT', 'GO', 'DF']
 ```
 
-O método `str.contains(r'\b[A-Z]{2}')` retorna `True` se o registro avaliado contem o padrão ou `Regex` indicado e `False` caso contrário, caso o registro for `NaN` o valor permanece inalterado.
+Em seguida, foi necessário realizar um pré processamento da coluna `df['Estado']`, retirando os espaços a mais nas strings armazenadas:
 
-Ao aplicar o cógigo acima, obtemos no seguinte resultado `True    632`, e, ao comparar com o resultado dos valores não nulos deste recurso, é possível afirmar que todos os registros estão na forma correta.
+```python
+df['Estado'] = [x.strip() if type(x) == str else np.nan for x in df['Estado']]
+```
 
-Ainda, seria interessante fazer a validação se cada um dos registros possui as siglas que representam um estado brasileiro, pois pode ter acontecido alguma escrita errada na hora de entrar com a informação do paciente.
+Finalmente, é realizada a validação através do comando `isin()` e `value_counts()`, como a seguir:
 
-### Tratando o recurso "CEP"
+```python
+df['Estado'].isin(uf).value_counts()
+```
 
-É realizado o mapemento dos registros que possuem o caracter '-' para em seguida formatar aqueles onde o valor não for `True`, da seguinte forma:
+Caso existisse algum valor que não se encontrasse na lista `uf` apareceria como `False`, como não é o caso, não será necessário realizar algum pós-processamento.
+
+### Tratando o recurso 'CEP'
+
+Foi percebido que nem todos os valores armazenado se encontram na formatação desejada, a principal diferença notada foi a falta do hífen dividindo os números, sendo assim será realizado o mapemento dos valores que contém ele a fim de modificar os valores que não o possuem: 
 
 ```python
 rows_with_dashes = df['CEP'].str.contains('-')
 df['CEP'] = [df['CEP'][i] if x == True else df['CEP'][i][:5]+'-'+df['CEP'][i][5:] if x == False else np.nan for i, x in enumerate(rows_with_dashes)]
-
 ```
 
-Repare que os valores `NaN` permanecem inalterados.
+### Tratando o recurso 'EstadoCivil' <a id="ancora1"></a>
 
-### Tratando o recurso "EstadoCivil" <a id="ancora1"></a>
-
-Neste recurso precisamos antes de tudo saber quais as categorias utilizadas para classificar o estado civil do paciente, assim, utilizaremos a seguinte linha de código:
+Para tratar esta coluna é necessário saber quais as categorias utilizadas para classificar o estado civil do paciente no Dataset anterior, assim, utilizaremos a seguinte linha de código:
 
 ```python
-print(df['EstadoCivil'].value_counts())
+df['EstadoCivil'].value_counts()
 ```
 
 Obtendo o seguinte output:
@@ -164,7 +183,7 @@ VI    145
 SE    132
 ```
 
-É possível observar que precisaremos subsituir essas categorias pelas equivalentes no padrão iClinic, como a seguir:
+É possível observar os valores equivalentes no padrão iClinic:
 
 - CA : casado : ma
 - ES : união estável : st
@@ -174,17 +193,15 @@ SE    132
 Em seguida é aplicado o seguinte comando para fazer a substituição das categorias:
 
 ```python
-df['EstadoCivil'].replace({'CA': 'ms', 'ES': 'st', 'VI': 'wi','SE': 'se'}, inplace=True)
+df['EstadoCivil'] = df['EstadoCivil'].replace({'CA': 'ms', 'ES': 'st', 'VI': 'wi','SE': 'se'})
 ```
 
-O parâmetro `inplace=True` garante que será feita a substituição na mesma coluna, e não uma cópia em outra coluna como por padrão.
+### Tratando o recurso 'Cor'
 
-### Tratando o recurso "Cor"
-
-De modo semelhante ao realizado no recurso "EstadoCivil", precisamos saber quais as categorias utilizadas para classificar a cor do paciente, assim, utilizaremos a seguinte linha de código:
+Para tratar esta coluna também será necessário saber quais as categorias utilizadas para classificar a cor do paciente no Dataset anterior, assim, analogamente ao realizado no caso anteior:
 
 ```python
-print(df['Cor'].value_counts())
+df['Cor'].value_counts()
 ```
 
 Obtendo o seguinte output:
@@ -210,7 +227,7 @@ Neste caso, decidimos colocar a raça indigena como parda já que não possui um
 Em seguida é aplicado o seguinte comando para fazer a substituição das categorias:
 
 ```python
-df['Cor'].replace({'B': 'wh', 'A': 'ye', 'P': 'br','N': 'bl', 'I': 'br'}, inplace=True)
+df['Cor'] = df['Cor'].replace({'B': 'wh', 'A': 'ye', 'P': 'br','N': 'bl', 'I': 'br'})
 ```
 
 ### Tratando o recurso "Endereco"
