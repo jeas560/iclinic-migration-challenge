@@ -490,9 +490,32 @@ O arquivo de saída a seguir será gerado com o conjunto de caracteres `UTF-8`, 
 df.to_csv('desafio-base2-output/physician_names.csv',index=False, encoding='utf-8')
 ```
 
+## Tratamento da tabela 'patient01' 
+***
+
+Como o tratamento para este arquivo é semelhante ao realizado com as tabelas 'plan02' e 'sysuser01' na seção passada, foi escolhido deixar o tratamento no caderno [Jupyter](https://jupyter.org/) para não deixar este arquivo muito extenso.
+
+Assim, o relatório deste tratamento se encontra no arquivo `desafio_base2_pacientes.ipynb`.
+
+## Tratamento da tabela 'text04' 
+***
+
+Como o tratamento para este arquivo é semelhante ao realizado com as tabelas 'plan02' e 'sysuser01' na seção passada, foi escolhido deixar o tratamento no caderno [Jupyter](https://jupyter.org/) para não deixar este arquivo muito extenso.
+
+Assim, o relatório deste tratamento se encontra no arquivo `desafio_base2_agenda.ipynb`.
+
+## Tratamento da tabela 'text01' 
+***
+
+Como o tratamento para este arquivo é semelhante ao realizado com as tabelas 'plan02' e 'sysuser01' na seção passada, foi escolhido deixar o tratamento no caderno [Jupyter](https://jupyter.org/) para não deixar este arquivo muito extenso.
+
+Assim, o relatório deste tratamento se encontra no arquivo `desafio_base2_evolucao.ipynb`.
+
 ## Conclusão
 
 Após a execução do tratamento dos dados dos arquivo da pasta `desafio-base1` serão obtidos os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv' na pasta `desafio-base1-output/`.
+
+Após a execução do tratamento da base de dados SQL da pasta `desafio-base2` serão obtidos os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv' na pasta `desafio-base2-output/`, além dos arquivos terceriso utilizados para armazenar informação relevante.
 
 Esperamos que o relatório tenha sido claro o suficiente, qualquer dúvida estou a disposição para explicar.
 
