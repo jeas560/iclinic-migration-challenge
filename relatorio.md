@@ -86,7 +86,7 @@ Alguns dos recursos precisarão de uma atenção ou tratamento mais detalhada, s
 
 Além desses recursos, no arquivo lido tem informação adicional que pode ser colocado na coluna "observation", mas devido ao tempo não foi possível de ser concluído, são estas "Conjuge", "ProfissaoConjuge"
 
-### Tratando o recurso 'Sexo'
+### Tratamento do recurso 'Sexo'
  
 Inicialmente foram testadas algumas ideias mais simples, mas não resultaram sendo corretas.
 
@@ -115,7 +115,7 @@ sexo = {
 }
 ```
 
-### Tratando o recurso 'Estado'
+### Tratamento do recurso 'Estado'
 
 A fim de verificar se a coluna continha apenas os valores das siglas de cada estado, assim, foi criado uma lista contendo os valores possíveis:
 
@@ -137,7 +137,7 @@ df['Estado'].isin(uf).value_counts()
 
 Caso existisse algum valor que não se encontrasse na lista `uf` apareceria como `False`, como não é o caso, não será necessário realizar algum pós-processamento.
 
-### Tratando o recurso 'CEP'
+### Tratamento do recurso 'CEP'
 
 Foi percebido que nem todos os valores armazenado se encontram na formatação desejada, a principal diferença notada foi a falta do hífen dividindo os números, sendo assim será realizado o mapemento dos valores que contém ele a fim de modificar os valores que não o possuem: 
 
@@ -146,7 +146,7 @@ rows_with_dashes = df['CEP'].str.contains('-')
 df['CEP'] = [df['CEP'][i] if x == True else df['CEP'][i][:5]+'-'+df['CEP'][i][5:] if x == False else np.nan for i, x in enumerate(rows_with_dashes)]
 ```
 
-### Tratando o recurso 'EstadoCivil' <a id="ancora1"></a>
+### Tratamento do recurso 'EstadoCivil' <a id="ancora1"></a>
 
 Para tratar esta coluna é necessário saber quais as categorias utilizadas para classificar o estado civil do paciente no Dataset anterior, assim, utilizaremos a seguinte linha de código:
 
@@ -176,7 +176,7 @@ Em seguida é aplicado o seguinte comando para fazer a substituição das catego
 df['EstadoCivil'] = df['EstadoCivil'].replace({'CA': 'ms', 'ES': 'st', 'VI': 'wi','SE': 'se'})
 ```
 
-### Tratando o recurso 'Cor'
+### Tratamento do recurso 'Cor'
 
 Para tratar esta coluna também será necessário saber quais as categorias utilizadas para classificar a cor do paciente no Dataset anterior, assim, analogamente ao realizado no caso anteior:
 
@@ -210,7 +210,7 @@ Em seguida é aplicado o seguinte comando para fazer a substituição das catego
 df['Cor'] = df['Cor'].replace({'B': 'wh', 'A': 'ye', 'P': 'br','N': 'bl', 'I': 'br'})
 ```
 
-### Tratando o recurso 'Endereco'
+### Tratamento do recurso 'Endereco'
 
 Nesta coluna estão incluidas as informações de outras colunas solicitadas no padrão iClinic.
 Assim, será preciso dividir esta informação em novas colunas que serão criadas a seguir:
@@ -236,7 +236,7 @@ df['neighborhood'] = [np.nan if str(x) == 'nan' else x[1].strip() if len(x) == 2
 df['address'] = [np.nan if str(x) == 'nan' else x[0] for x in row_with_adress]
 ```
 
-### Tratando o recurso 'TipoTelefone' e 'Telefone'
+### Tratamento dos recursos 'TipoTelefone' e 'Telefone'
 
 De modo semelhante ao realizado nos recursos 'EstadoCivil' e 'Cor', é necessário saber quais as categorias utilizadas para classificar o Tipo de telefone do paciente, assim, será aplicada a segiunte linha de código:
 
@@ -283,7 +283,7 @@ df['mobile_phone'] = '(' + df['Telefone'][rows_t].str[:2] + ')9' + df['Telefone'
 rows_t = df['TipoTelefone'].str.contains('R', na=False)
 df['home_phone'] = '(' + df['Telefone'][rows_t].str[-10:-8] + ')' + df['Telefone'][rows_t].str[-8:-4] + '-' + df['Telefone'][rows_t].str[-4:]
 ```
-### Mudança de nome das colunas
+### Mudança de nome das colunas para o padrão iClinic
 
 Em seguida será realizada a mudança no nome dos recursos no Dataset anterior para os nomes equivalente ao padrão iClinic:
 
@@ -307,7 +307,7 @@ df = df.rename(
 )
 ```
 
-### Adicionando recursos ausentes
+### Adição de recursos ausentes
 
 Ainda, pelo modelo `importacao-iclinic/patient.csv` é necessário adicionar algumas colunas ausentes, ou seja, que não foram passadas no documento de entrada, por padrão iremos colocar o valor `NaN` nelas:
 
@@ -337,7 +337,7 @@ df['tag_names'] = np.nan
 df['tag_physician_id'] = np.nan
 ```
 
-### Removendo Recursos repetidos ou não necessários
+### Remoção de recursos repetidos ou não necessários
 
 A seguir, serão removidos os recursos repetidos ou que não são mais necessários:
 
@@ -345,7 +345,7 @@ A seguir, serão removidos os recursos repetidos ou que não são mais necessár
 df =  df.loc[:, ["patient_id","name","birth_date","gender","cpf","rg","rg_issuer","mobile_phone","home_phone","office_phone","email","email_secondary","birth_place","birth_state","zip_code","address","number","complement","neighborhood","city","state","country","picture_filename","ethnicity","marital_status","religion","occupation","education","responsible","cns","died","death_info","nationality","indication","indication_observation","active","receive_email","observation","healthinsurance_pack","patientrelatedness_mother_names","patientrelatedness_father_names","tag_names","tag_physician_id"]]
 ```
 
-## Escrevendo o arquivo de saída
+## Exportação do arquivo de saída
 
 Como solicitado no desafio, o arquivo de saída será gerado com o conjunto de caracteres `UTF-8`:
 
@@ -355,191 +355,15 @@ df.to_csv('patient.csv',index=False, encoding='utf-8')
 
 ## Tratamento dos dados do arquivo 'agenda.csv'
 
-Nesta seção trabalharemos no arquivo `desafio-base1_agenda.ipynb`.
+Como o tratamento para este arquivo é semelhante ao realizado com o arquivo 'pacientes.csv' na seção passada, foi escolhido deixar o tratamento no caderno [Jupyter](https://jupyter.org/) para não deixar este arquivo muito extenso.
 
-## Exploração inicial e primeiras impressões
-
-Análogamente ao realizado no primeiro dataset, nesta seção iremos realizar uma exploração inicial também realizada num [Notebook Jupyter](https://jupyter.org/).
-
-### Importando Bibliotecas
-
-As bibliotecas importadas serão as mesmas que foram utilizadas pro arquivo anterior:
-
-```python
-import numpy as np
-import pandas as pd
-```
-
-### Lendo e análise inicial dos dados de entrada
-
-Novamente, utilizaremos a função `read_csv()` do `pandas`, com os seguintes parâmetros: `parse_dates=['Data'], encoding='iso-8859-1', quotechar='"', delimiter='|'`, como utilizado na seção anterior.
-
-Em seguida será printada na tela o `shape` que é de 1230x9, ou seja, têm-se 1230 linhas (registros), além da linha correspondente ao cabeçalho do arquivo `.csv`, e 9 colunas (recursos).
-
-```python
-df = pd.read_csv('desafio-base1/agenda.csv', parse_dates=['Data'], encoding='iso-8859-1',quotechar='"', delimiter='|')
-df.shape
-```
-
-### Vendo os dados
-
-Usando o métoto `head()` do `pandas` com um argumento `3` nele, veremos os primeiros `3` registros da tabela interia.
-
-De modo semelhante, o método `info()` do `pandas` nos dará um resumo dos dados, para que possamos saber como tratar os dados.
-
-## Limpando e tratando os dados
-
-Nesta seção iremos realizar a limpeza dos dados.
-
-### Valores ausentes
-
-Quando utilizamos o método `info()` para ver o resumo dos dados, foi possível ver que muitas colunas tinham muitos dados ausentes, entrentanto, é solicitado na documentação da iClinic que os campos `patient_name`, `physician_id` e `date` sejam obrigatórios, como é possível ver, nas colunas `Usuário`, `Código` e `Data` são suas colunas correspondentes, estas são as únicas colunas que não tem valores nulos nos seus registros, logo não será preciso maior tratamento para cumprir as condições obrigatórias.
-
-### Recursos equivalentes
-
-Como comentado anteriormente, é possível ver que muitos dos recursos no arquivo lido possuem uma relação de equivalencia quase direta com os recursos da documentação iClinic, são estes:
-
-- "Código":"physician_id"
-- "Usuário": "patient_name"
-- "Data":"date"
-- "HoraConsulta": "arrival_time"
-- "HoraAtendimento": "start_time"
-- "HoraFim": "end_time"
-- "CodConvenio": "healthinsurance_name"
-- "Tipo": "name"
-- "Valor": "value"
-
-O tratamento destes recursos será realizado em seguida, já que é relativamente simples. 
-
-A mudança nos nomes entre os recursos equivalentes será realizada no final, já que não é relevante para este início.
-
-Uns recursos precisarão de uma atenção ou tratamento mais detalhada, são estes: "Tipo" e "Valor".
-
-### Tratando os recursos "HoraConsulta", "HoraAtendimento" e "HoraFim"
- 
-Nestes recursos será realizada apenas a formatação das horas como solicitado no padrão iClinic, ainda, como não foi informado a data de entrada, deixaremos só o tempo na coluna do recurso "HoraConsulta", como mostrado a seguir:
-
-```python
-df['HoraConsulta'] = pd.to_datetime(df['HoraConsulta'], format='%H:%M:%S').dt.time
-df['HoraAtendimento'] = pd.to_datetime(df['HoraAtendimento'], format='%H:%M:%S').dt.time
-df['HoraFim'] = pd.to_datetime(df['HoraFim'], format='%H:%M:%S').dt.time
-```
-
-### Tratando o recurso "CodConvenio"
- 
-Neste recurso não tivemos acesso aos nomes dos convênios, mas se tivessemos eles, realizariamos um procedimento semelhante ao realizado na seção [Tratando o recurso "EstadoCivil"](#ancora1).
-
-### Tratando o recurso "physician_id"
-
-Será criado um novo recurso com o nome "physician_id", como a seguir:
-
-```python
-df['physician_id'] = pd.factorize(df['Usuário'])[0].astype(int)
-```
-
-O método `factorize(df['Usuário'])` realiza o mapeamento dos valores do recurso, dando um número para cada usuário em `df['Usuário']` de forma sequencial.
-
-### Exportando os nomes dos médicos
-
-Aqui seria interessante criar uma lista relacionando o nome do médico e seu "physician_id" do médico para futuro tratamento, a seguir será exportado um arquivo `.csv` com os nomes dos médicos de forma ordenada.
-
-```python
-uniques = pd.factorize(df['Usuário'])[1]
-pd_uniques = pd.DataFrame(data={"physician_names": uniques})
-pd_uniques.to_csv('physician_names.csv',index=False, encoding='utf-8')
-```
-
-### Tratamento recurso 'patient_name'
-
-Este recurso precisa de informação externa para ser tratado, resumidamente, utilizaremos o índice em "patient_id" para localizar o nome do usuário no arquivo "patient.csv"
-
-```python
-df_patient = pd.read_csv('patient.csv', usecols = ["name"])
-```
-Repare que estamos utilizando o arquivo com os dados tratados anteriormente.
-Neste caso, como o 'patient_id' inicia com 0 e está ordenada é fácil de encontrar seu nome correspondente.
-
-```python
-index = df['Código'].values
-df['patient_name'] = df_patient['name'][index].values
-```
-
-### Tratando do recurso 'eventprocedure_pack'
-
-Será criado um novo recurso com o nome 'eventprocedure_pack', nele teremos que colocar os valores em formato `json`, pelo que utilizaremos o método `to_json` nos colunas 'Tipo' e 'Valor', neste caso foi utilizado parâmetro `force_ascii = False` para visualizar a escrita de forma correta em `utf-8`.
-Além disso, como não temos a informação de recurso 'quantity', não colocaremos nada no lugar.
-
-```python
-df['eventprocedure_pack'] = ('json::['+df[['Tipo','Valor']].apply(lambda x: x.to_json(force_ascii =  False), axis=1)+']')
-```
-
-### Tratando os recursos equivalentes
-
-Como comentado no inicio desta seção, será realizada agora a mudança no nome dos recursos cuja relação é diretamente equivalente ao padrão iClinic:
-
-```python
-df = df.rename(
-    columns = {
-        "Código": "patient_id",
-        "Data": "date",
-        "HoraConsulta": "arrival_time",
-        "HoraAtendimento": "start_time",
-        "HoraFim": "end_time",
-        "CodConvenio": "healthinsurance_name",
-        "Tipo": "name",
-        "Valor": "value",
-    }
-)
-```
-
-### Adicionando recursos ausentes
-
-Ainda, pelo modelo `importacao-iclinic/patient.csv` é necessário adicionar algumas colunas ausentes, ou seja, que não foram passadas no documento de entrada, por padrão iremos colocar o valor `NaN` nelas:
-
-```python
-df['status'] = 'cp'
-df['patient_home_phone'] = np.nan
-df['patient_mobile_phone'] = np.nan
-df['description'] = np.nan
-df['all_day'] = np.nan
-df['cancel_reason'] = np.nan  
-df['patient_email'] = np.nan  
-df['event_blocked_scheduling'] = np.nan
-df['quantity'] = np.nan  
-```
-
-### Removendo Recursos repetidos ou não necessários
-
-Aqui, iremos remover os recursos repetidos ou que não são mais necessários, como a seguir:
-
-```python
-df = df.loc[:, ["patient_id","patient_name","physician_id","date","status","patient_home_phone","patient_mobile_phone","arrival_time","start_time","end_time","description","all_day","cancel_reason","patient_email","event_blocked_scheduling","healthinsurance_name","eventprocedure_pack"]]
-```
-
-## Escrevendo o arquivo de saída
-
-Como solicitado no desafio, o arquivo de saída será gerado com o conjunto de caracteres `UTF-8`:
-
-```python
-df.to_csv('event_scheduling.csv',index=False, encoding='utf-8')
-```
+Assim, o relatório deste tratamento se encontra no arquivo `desafio-base1_agenda.ipynb`.
 
 ## Tratamento dos dados do arquivo 'evolucao.csv'
 
-Nesta seção trabalharemos no arquivo `desafio-base1_evolucao.ipynb`.
+Como o tratamento para este arquivo é semelhante ao realizado com o arquivo 'pacientes.csv' na seção passada, foi escolhido deixar o tratamento no caderno [Jupyter](https://jupyter.org/) para não deixar este arquivo muito extenso.
 
-## Exploração inicial e primeiras impressões
-
-Análogamente ao realizado nos primeiros datasets, nesta seção iremos realizar uma exploração inicial também realizada num [Notebook Jupyter](https://jupyter.org/).
-
-### Importando Bibliotecas
-
-As bibliotecas importadas serão as mesmas que foram utilizadas pro arquivo anterior:
-
-```python
-import numpy as np
-import pandas as pd
-```
+Assim, o relatório deste tratamento se encontra no arquivo `desafio-base1_evolucao.ipynb`.
 
 ### Lendo e análise inicial dos dados de entrada
 
