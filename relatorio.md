@@ -60,8 +60,6 @@ Cada parâmetro tem o seguinte significado:
 - `quotechar='"'`: O caracter usado para denotar o inicio e fim de um item entre aspas
 - `delimiter='|'`: delimitador utilizado na escrita do arquivo
 
-<!-- Em seguida será printada na tela o `shape` que é de 783x18, ou seja, têm-se 738 linhas (registros), além da linha correspondente ao cabeçalho do arquivo `.csv`, e 18 colunas (recursos). -->
-
 ### Visualização dos dados
 
 Nas próximas duas células é realizada a visualização inicial dos dados.
@@ -354,130 +352,58 @@ df.to_csv('patient.csv',index=False, encoding='utf-8')
 ```
 
 ## Tratamento dos dados do arquivo 'agenda.csv'
+***
 
 Como o tratamento para este arquivo é semelhante ao realizado com o arquivo 'pacientes.csv' na seção passada, foi escolhido deixar o tratamento no caderno [Jupyter](https://jupyter.org/) para não deixar este arquivo muito extenso.
 
 Assim, o relatório deste tratamento se encontra no arquivo `desafio-base1_agenda.ipynb`.
 
 ## Tratamento dos dados do arquivo 'evolucao.csv'
+***
 
 Como o tratamento para este arquivo é semelhante ao realizado com o arquivo 'pacientes.csv' na seção passada, foi escolhido deixar o tratamento no caderno [Jupyter](https://jupyter.org/) para não deixar este arquivo muito extenso.
 
 Assim, o relatório deste tratamento se encontra no arquivo `desafio-base1_evolucao.ipynb`.
 
-### Lendo e análise inicial dos dados de entrada
+***
+## Tratamento da base de dados 'desafio-base2' 
+***
 
-Novamente, utilizaremos a função `read_csv()` do `pandas`, com os seguintes parâmetros: `parse_dates=['Data'], encoding='iso-8859-1', quotechar='"', delimiter='|'`, como utilizado na seção anterior.
+O tratamento dos dados da base de dados 'desafio-base2' iniciou com a importação do arquivo SQL `desafio-base2/backup.sql`, para o servidor local MySQL, em seguida foi realizada uma análise do contúdo e relação das tabelas do banco de dados, gerando o arquivo `EER_Diagram_dbase03.pdf` o qual contem uma representação simples, em diagrama, das tabelas do banco de dados `dbase03` (repare que não foi possível encontrar as `foreing keys` para a criação das setas relacionando as tabelas).
 
-Em seguida será printada na tela o `shape` que é de 1230x6, ou seja, têm-se 1230 linhas (registros), além da linha correspondente ao cabeçalho do arquivo `.csv`, e 6 colunas (recursos).
+A seguir será apresentada a sequencia de análise e tratamento dos dados, é importante notar que é preciso manter esta sequência para o correto funcionamento das próximas scripts.
 
-```python
-df = pd.read_csv('desafio-base1/evolucao.csv', parse_dates=['Data'], encoding='iso-8859-1',quotechar='"', delimiter='|')
-df.shape
-```
+## Tratamento das tabelas 'plan02' e 'sysuser01'
+***
 
-### Vendo os dados
+A script correspondente ao tratamento dos dados pode ser encontrada no arquivo `desafio_base2_planos_e_medicos.ipynb`.
 
-Usando o métoto `head()` do `pandas` com um argumento `3` nele, veremos os primeiros `3` registros da tabela interia.
+## Exploração inicial e primeiras impressões
 
-De modo semelhante, o método `info()` do `pandas` nos dará um resumo dos dados, para que possamos saber como tratar os dados.
+Nesta seção será apresentada a exploração inicial dos dados num caderno Jupyter ou [Jupyter Notebook](https://jupyter.org/).
 
-## Limpando e tratando os dados
+Ao abrir o caderno `desafio-base1_pacientes.ipynb` será possível ver os códigos utilizados para o tratamento dos dados.
 
-Nesta seção iremos realizar a limpeza dos dados.
+### Importação das bibliotecas
 
-### Valores ausentes
-
-Quando utilizamos o método `info()` para ver o resumo dos dados, foi possível ver que muitas colunas tinham muitos dados ausentes, entrentanto, é solicitado na documentação da iClinic que os campos `patient_id`, `patient_name`, `physician_id`, `date` e `eventblock_text` sejam obrigatórios, como é possível ver, as colunas `Código`, `Data` e `Medico` são seus correspondentes, e a única coluna com valores nulos nos seus registros é a de procedimento.
-
-### Recursos equivalentes
-
-Como comentado anteriormente, é possível ver que muitos dos recursos no arquivo lido possuem uma relação de equivalencia quase direta com os recursos da documentação iClinic, são estes:
-
-- "Código":"patient_id"
-- "Data":"date"
-- "Medico": "physician_id"
-- "Procedimento": "tab_name"
-- "Tipo": "eventblock_name"
-- "Evolução": "eventblock_text"
-
-O tratamento destes recursos será realizado em seguida. 
-
-Uns recursos precisarão de uma atenção ou tratamento mais detalhada, são estes: "patient_name" e "physician_id".
-
-Será realizada agora a mudança no nome dos recursos cuja relação é diretamente equivalente ao padrão iClinic:
+Na primeira célula é realizada a importação das bibliotecas utilizadas:
 
 ```python
-df = df.rename(
-    columns = {
-        "Código": "patient_id",
-        "Data": "date",
-        "Procedimento": "tab_name",
-        "Tipo": "eventblock_name",
-        "Evolução": "eventblock_text",
-        "Medico": "physician_id",
-    }
-)
+import numpy as np
+import pandas as pd
 ```
 
-### Tratando do recurso "patient_name"
+A seguir uma breve apresentação de cada biblioteca:
 
-Este recurso precisa de informação externa para ser tratado, resumidamente, utilizaremos o índice em "patient_id" para localizar o nome do usuário na coluna "patient_name" no arquivo "patient.csv", como a seguir:
+- A biblioteca [NumPy](https://numpy.org/) é fundamental para qualquer tipo de computação científica em Python
+- A biblioteca [pandas](https://pandas.pydata.org/) é a ferramenta pricipal para análise e manipulação de dados
 
-```python
-df_patient = pd.read_csv('patient.csv', usecols = ["name"])
-```
-Repare que estamos utilizando o arquivo com os dados tratados anteriormente.
-Neste caso, como o 'patient_id' inicia com 0 e está ordenada é fácil de encontrar seu nome correspondente:
 
-```python
-index = df['patient_id'].values
-df['patient_name'] = df_patient['name'][index].values
-```
 
-### Tratando do recurso "physician_id"
-
-Este recurso também precisa de informação externa para ser tratado, resumidamente, importaremos o dataframe do arquivo 'physician_names.csv', como a seguir:
-
-```python
-df_physician_names = pd.read_csv('physician_names.csv')
-```
-
-Em seguida, como o 'physician_names' está ordenado, podemos relacionar os indices de forma crescente e depois fazer a sua substituição devida.
-
-```python
-index_of_df_physician_names = pd.factorize(df_physician_names['physician_names'])[0].astype(int)
-df['physician_id'].replace(df_physician_names.values,index_of_df_physician_names, inplace=True)
-```
-
-### Adicionando recursos ausentes
-
-Ainda, pelo modelo `importacao-iclinic/event_record.csv` é necessário adicionar algumas colunas ausentes, ou seja, que não foram passadas no documento de entrada, por padrão iremos colocar o valor `NaN` nelas:
-
-```python
-df['start_time'] = np.nan
-df['end_time'] = np.nan
-```
-
-### Removendo Recursos repetidos ou não necessários
-
-Aqui, iremos remover os recursos repetidos ou que não são mais necessários, deixando apenas as colunas de interesse, como a seguir:
-
-```python
-df = df.loc[:, ["patient_id","patient_name","physician_id","date","start_time","end_time","tab_name","eventblock_name","eventblock_text"]]
-```
-
-## Escrevendo o arquivo de saída
-
-Como solicitado no desafio, o arquivo de saída será gerado com o conjunto de caracteres `UTF-8`:
-
-```python
-df.to_csv('event_record.csv',index=False, encoding='utf-8')
-```
 
 ## Conclusão
 
-Após o tratamento dos dados dos arquivo da pasta `desafio-base1` foram obtidos os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv'.
+Após a execução do tratamento dos dados dos arquivo da pasta `desafio-base1` serão obtidos os arquivos 'patient.csv', 'event_scheduling.csv' e 'event_record.csv' na pasta `desafio-base1-output/`.
 
 Esperamos que o relatório tenha sido claro o suficiente, qualquer dúvida estou a disposição para explicar.
 
