@@ -369,9 +369,9 @@ Assim, o relatório deste tratamento se encontra no arquivo `desafio-base1_evolu
 ## Tratamento da base de dados 'desafio-base2' 
 ***
 
-O tratamento dos dados da base de dados 'desafio-base2' iniciou com a importação do arquivo SQL `desafio-base2/backup.sql`, para o servidor local MySQL, em seguida foi realizada uma análise do contúdo e relação das tabelas do banco de dados, gerando o arquivo `EER_Diagram_dbase03.pdf` o qual contem uma representação simples, em diagrama, das tabelas do banco de dados `dbase03` (repare que não foi possível encontrar as `foreing keys` para a criação das setas relacionando as tabelas).
+O tratamento dos dados da base de dados 'desafio-base2' iniciou com a importação do arquivo SQL `desafio-base2/backup.sql`, para o servidor local MySQL, em seguida foi realizada uma análise do conteúdo e relação das tabelas do banco de dados, gerando o arquivo `EER_Diagram_dbase03.pdf` o qual contém uma representação simples, em diagrama, das tabelas do banco de dados importada `dbase03` (repare que não foi possível encontrar as `foreing keys` para a criação das setas relacionando as tabelas).
 
-A seguir será apresentada a sequencia de análise e tratamento dos dados, é importante notar que é preciso manter esta sequência para o correto funcionamento das próximas scripts.
+A seguir será apresentada a sequência de análise e tratamento dos dados, é importante ressaltar que é preciso manter esta sequência para o correto funcionamento das próximas scripts.
 
 ## Tratamento das tabelas 'plan02' e 'sysuser01'
 ***
