@@ -369,7 +369,7 @@ Assim, o relatório deste tratamento se encontra no arquivo `desafio-base1_evolu
 ## Tratamento da base de dados 'desafio-base2' 
 ***
 
-O tratamento dos dados da base de dados 'desafio-base2' iniciou com a importação do arquivo SQL `desafio-base2/backup.sql`, para o servidor local MySQL, em seguida foi realizada uma análise do conteúdo e relação das tabelas do banco de dados, gerando o arquivo `EER_Diagram_dbase03.pdf` o qual contém uma representação simples, em diagrama, das tabelas do banco de dados importada `dbase03` (repare que não foi possível encontrar as `foreing keys` para a criação das setas relacionando as tabelas).
+O tratamento dos dados da base de dados 'desafio-base2' iniciou com a importação do arquivo SQL `desafio-base2/backup.sql`, para o servidor local MySQL, em seguida foi realizada uma análise do conteúdo e relação das tabelas do banco de dados, gerando o arquivo `EER_Diagram_dbase03.pdf` o qual contém uma representação simples, em diagrama, das tabelas do banco de dados importada `dbase03` (repare que não foi possível encontrar as `foreing keys` ou chaves estrangeiras para a criação das setas relacionando as tabelas umas com as outras).
 
 A seguir será apresentada a sequência de análise e tratamento dos dados, é importante ressaltar que é preciso manter esta sequência para o correto funcionamento das próximas scripts.
 
@@ -378,28 +378,117 @@ A seguir será apresentada a sequência de análise e tratamento dos dados, é i
 
 A script correspondente ao tratamento dos dados pode ser encontrada no arquivo `desafio_base2_planos_e_medicos.ipynb`.
 
-## Exploração inicial e primeiras impressões
-
-Nesta seção será apresentada a exploração inicial dos dados num caderno Jupyter ou [Jupyter Notebook](https://jupyter.org/).
-
-Ao abrir o caderno `desafio-base1_pacientes.ipynb` será possível ver os códigos utilizados para o tratamento dos dados.
-
 ### Importação das bibliotecas
+ 
+A seguir uma breve apresentação de cada biblioteca que será utilizada:
 
-Na primeira célula é realizada a importação das bibliotecas utilizadas:
+- A biblioteca [NumPy](https://numpy.org/) é fundamental para qualquer tipo de computação científica em Python
+- A biblioteca [pandas](https://pandas.pydata.org/) é a nossa ferramenta pricipal para análise e manipulação de dados
+- A biblioteca [python-decouple](https://github.com/henriquebastos/python-decouple) auxiliar para trabalhar com variaveis de ambiente
+- A biblioteca [SQLAlchemy](https://www.sqlalchemy.org/) é uma biblioteca de mapeamento objeto-relacional SQL
 
 ```python
 import numpy as np
 import pandas as pd
+
+import decouple
+import sqlalchemy
 ```
 
-A seguir uma breve apresentação de cada biblioteca:
+### Leitura e tratamento inicial dos dados de entrada
 
-- A biblioteca [NumPy](https://numpy.org/) é fundamental para qualquer tipo de computação científica em Python
-- A biblioteca [pandas](https://pandas.pydata.org/) é a ferramenta pricipal para análise e manipulação de dados
+Para poder realizar a conexão com o banco de dados `SQL`, precisaremos de algumas informações que estão armazenadas no arquivo `.env` e quer serão importadas através da biblioteca `decouple`, como a seguir:
 
+```python
+user = decouple.config("db_user_mysql")
+host = decouple.config('db_host_mysql')
+password = decouple.config('db_password_mysql')
+database = decouple.config("db_database_mysql")
+```
+Através da biblioteca `sqlalchemy` será criado o objeto [Engine](https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Engine) que é baseado na URL do banco de dados.
 
+```python
+connection = sqlalchemy.create_engine("mysql+mysqldb://"+user+":"+password+"@"+host+"/"+database)
+```
 
+Será necessário instalar o pacote cujo nome para instalação no Ubuntu 20.04 é `libmysqlclient-dev` para utilizar o driver `mysqldb`, caso não esteja instalado.
+
+Em seguida, através da biblioteca `pandas` é realizada a importação da tabela 'plan02' utilizando a função `read_sql_table()`, onde o parâmetro `con = connection` é o objeto `engine` criado na célula anterior.
+
+```python
+df = pd.read_sql_table('plan02', con = connection)
+```
+
+### Visualização dos dados
+
+Nas próximas duas células é realizada a visualização inicial dos dados.
+
+Usando o método `head()` do `pandas` com um argumento `4` nele é possível visualizar os primeiros `4` registros do Dataframe.
+    
+O `.T` significa `Transposição`, desta forma as linhas serão visualizadas como colunas e vice-versa.
+
+```python
+df.head(4).T
+```
+O método `info()` do `pandas` apresenta um resumo dos dados no Dataframe, uma informação interessante é o tipo de dado de cada recurso.
+
+```python
+df.info()
+```
+
+### Remoção de recursos repetidos ou não necessários
+
+A seguir, serão removidos os recursos que o autor não achou necessários:
+
+```python
+df =  df.loc[:, ["plan","code","name","account","billsenddayinternal","returndaysexternal"]]
+```
+
+### Exportação do arquivo de saída
+
+O arquivo de saída a seguir será gerado com o conjunto de caracteres `UTF-8`, e será útil para o tratamento das próximas tabelas:
+
+```python
+df.to_csv('desafio-base2-output/planos.csv',index=False, encoding='utf-8')
+```
+
+### Leitura e tratamento inicial dos dados de entrada
+
+Em seguida, será realizada a importação da tabela 'sysuser01'.
+
+```python
+df = pd.read_sql_table('sysuser01', con = connection)
+```
+
+### Visualização dos dados
+
+Nas próximas duas células é realizada a visualização inicial dos dados.
+
+```python
+df.head(3).T
+```
+
+e
+
+```python
+df.info()
+```
+
+### Remoção de recursos repetidos ou não necessários
+
+A seguir, serão removidos os recursos que o autor não achou necessários:
+
+```python
+df =  df.loc[:, ["sysuser","name"]]
+```
+
+### Exportação do arquivo de saída
+
+O arquivo de saída a seguir será gerado com o conjunto de caracteres `UTF-8`, e será útil para o tratamento das próximas tabelas:
+
+```python
+df.to_csv('desafio-base2-output/physician_names.csv',index=False, encoding='utf-8')
+```
 
 ## Conclusão
 
