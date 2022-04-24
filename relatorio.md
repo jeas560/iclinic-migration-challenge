@@ -76,31 +76,11 @@ O método `info()` do `pandas` apresenta um resumo dos dados no Dataframe, uma i
 
 A seguir será realizada a limpeza e tratamento dos dados.
 
-### Valores ausentes
+### Valores ausentes, valores equivalentes e tratamento inicial
 
-Quando utilizamos o método `info()` para ver o resumo dos dados, foi possível ver que muitas colunas tinham muitos dados ausentes, entrentanto, é solicitado na documentação da iClinic que os campos `patient_id` e `name` sejam obrigatórios, como é possível ver, nas colunas `Código` e `Nome`, que são seus correspondentes, estas são as únicas colunas que não tem valores nulos nos seus registros, logo não será preciso maior tratamento para cumprir as condições obrigatórias.
+Quando utilizado o método `info()` para ver o resumo dos dados, foi possível ver que muitas colunas tinham muitos dados ausentes, entrentanto, na documentação da iClinic é possível ver que os campos `patient_id` e `name` são obrigatórios e no Dataset anterior as colunas `Código` e `Nome` são seus equivalentes, ainda, estas são as únicas colunas que não tem valores nulos nos seus registros, logo, a priori, não será necessário um maior tratamento para cumprir as condições obrigatórias.
 
-### Recursos equivalentes
-
-Como comentado anteriormente, é possível ver que muitos dos recursos no arquivo lido possuem uma relação de equivalencia quase direta com os recursos da documentação iClinic, são estes:
-
-- "Código":"patient_id"
-- "Nome": "name"
-- "DataNasc":"birth_date"
-- "Sexo": "gender"
-- "Estado": "state"
-- "Cidade": "city"
-- "CEP": "zip_code"
-- "Naturalidade": "birth_place"
-- "Profissao": "occupation"
-- "Pai": "patientrelatedness_father_names"
-- "Mae": "patientrelatedness_mother_names"
-- "Cor": "ethnicity"
-- "EstadoCivil": "marital_status"
-
-O tratamento destes recursos será realizado em seguida, já que é relativamente simples. 
-
-A mudança nos nomes entre os recursos equivalentes será realizada no final, já que não é relevante para o tratamento inicial.
+O tratamento de algumas colunas será realizado em seguida, mas quando o tratamento necessário for apenas na mudança nos nomes entre os recursos equivalentes, este será realizada no final, já que não é relevante para o tratamento inicial.
 
 Alguns dos recursos precisarão de uma atenção ou tratamento mais detalhada, são estes: "Telefone", "TipoTelefone" e "Endereco".
 
@@ -214,7 +194,7 @@ N    127
 I    114
 ```
 
-Como realizado anteriormente, precisaremos subsituir essas categorias pelas equivalentes no padrão iClinic, como a seguir:
+Como realizado anteriormente, serão subsituidas essas categorias pelas equivalentes no padrão iClinic, como a seguir:
 
 - B : Branca : wh
 - A : Amarela :	ye
@@ -222,7 +202,7 @@ Como realizado anteriormente, precisaremos subsituir essas categorias pelas equi
 - N : Negra : bl
 - I : Indigena : br
 
-Neste caso, decidimos colocar a raça indigena como parda já que não possui uma categoria específica no padrão iClinic, e esta foi a mais proxima no entender do autor.
+Neste caso, foi decidido colocar a raça indigena como parda já que ela não possui uma categoria específica no padrão iClinic, e, no entender do autor, esta foi a mais proxima.
 
 Em seguida é aplicado o seguinte comando para fazer a substituição das categorias:
 
@@ -230,10 +210,10 @@ Em seguida é aplicado o seguinte comando para fazer a substituição das catego
 df['Cor'] = df['Cor'].replace({'B': 'wh', 'A': 'ye', 'P': 'br','N': 'bl', 'I': 'br'})
 ```
 
-### Tratando o recurso "Endereco"
+### Tratando o recurso 'Endereco'
 
-Neste recurso estão incluidas as informações de outros recursos solicitados no padrão iClinic.
-Assim, precisaremos dividir esta informação em novos recursos, pelo que criaremos os seguintes recursos:
+Nesta coluna estão incluidas as informações de outras colunas solicitadas no padrão iClinic.
+Assim, será preciso dividir esta informação em novas colunas que serão criadas a seguir:
 
 ```python
 df['address'] = np.nan
@@ -243,11 +223,11 @@ df['neighborhood'] = np.nan
 df['country'] = "BR"
 ```
 
-Dessa forma, o valor padrão delas será `NaN` com excepção do recurso 'country', repare que criamos as novas colunas de acordo ao padrão iClinic.
+Dessa forma, o valor padrão delas será `NaN` com excepção da coluna 'country'.
 
-Em seguida, separaremos a informação contida no recurso 'Endereco' com o método `str.split(',')` e a armazenaremos numa coluna temporária cujo nome será `row_with_adress`.
+Em seguida, a informação contida no recurso 'Endereco' é dividida com o método `str.split(',')` e será armazenada numa coluna temporária de nome `row_with_adress`.
 
-Finalmente, distribuiremos a informação de acordo ao seu tipo, como a seguir:
+Finalmente, será feita a distribuição da informação de acordo ao seu tipo, como a seguir:
 
 ```python
 row_with_adress = df['Endereco'].str.split(',')
@@ -256,9 +236,9 @@ df['neighborhood'] = [np.nan if str(x) == 'nan' else x[1].strip() if len(x) == 2
 df['address'] = [np.nan if str(x) == 'nan' else x[0] for x in row_with_adress]
 ```
 
-### Tratando o recurso "TipoTelefone" e "Telefone"
+### Tratando o recurso 'TipoTelefone' e 'Telefone'
 
-De modo semelhante ao realizado nos recursos "EstadoCivil" e "Cor", precisamos saber quais as categorias utilizadas para classificar o Tipo de telefone do paciente, assim, utilizaremos a seguinte linha de código:
+De modo semelhante ao realizado nos recursos 'EstadoCivil' e 'Cor', é necessário saber quais as categorias utilizadas para classificar o Tipo de telefone do paciente, assim, será aplicada a segiunte linha de código:
 
 ```python
 print(df['TipoTelefone'].value_counts())
@@ -271,13 +251,13 @@ T    195
 R    195
 ```
 
-Diferentemente do realizado anteriormente, precisaremos distribuir as categorias nos rescursos equivalentes no padrão iClinic, como a seguir:
+Como realizado anteriormente, serão subsituidas essas categorias pelas equivalentes no padrão iClinic, como a seguir:
 
 - C : Celular : "mobile_phone"
 - T : Trabalho : "office_phone"
 - R : Residencial: "home_phone"
 
-Pelo que criaremos os seguintes recursos:
+Porém, diferentemente do realizado anteriormente, será necessário distribuir as categorias de uma coluna em outras de acordo a sua categoria, assim serão criadas novas colunas vazias:
 
 ```python
 df['mobile_phone'] = np.nan
@@ -285,13 +265,13 @@ df['office_phone'] = np.nan
 df['home_phone'] = np.nan
 ```
 
-Em seguida, extrairemos somente os valores numéricos do recurso "Telefone" e os armazenaremos de volta como `string`:
+Em seguida, serão extraídos somente os valores numéricos do recurso "Telefone" e serão armazenados de volta como `string`:
 
 ```python
 df['Telefone'] = df['Telefone'].astype('str').str.extractall('(\d+)').unstack().fillna('').sum(axis=1).astype(int).astype('str')
 ```
 
-Finalmente, armazenaremos os numeros de telefone no formato desejado e no seu devido recurso dependendo do seu tipo:
+Finalmente, serão armazenados os numeros de telefone no formato desejado e na sua respectiva coluna:
 
 ```python
 rows_t = df['TipoTelefone'].str.contains('T', na=False)
@@ -303,9 +283,9 @@ df['mobile_phone'] = '(' + df['Telefone'][rows_t].str[:2] + ')9' + df['Telefone'
 rows_t = df['TipoTelefone'].str.contains('R', na=False)
 df['home_phone'] = '(' + df['Telefone'][rows_t].str[-10:-8] + ')' + df['Telefone'][rows_t].str[-8:-4] + '-' + df['Telefone'][rows_t].str[-4:]
 ```
-### Tratando os recursos equivalentes
+### Mudança de nome das colunas
 
-Como comentado no inicio desta seção, será realizada agora a mudança no nome dos recursos cuja relação é diretamente equivalente ao padrão iClinic:
+Em seguida será realizada a mudança no nome dos recursos no Dataset anterior para os nomes equivalente ao padrão iClinic:
 
 ```python
 df = df.rename(
@@ -359,7 +339,7 @@ df['tag_physician_id'] = np.nan
 
 ### Removendo Recursos repetidos ou não necessários
 
-Aqui, iremos remover os recursos repetidos ou que não são mais necessários, como a seguir:
+A seguir, serão removidos os recursos repetidos ou que não são mais necessários:
 
 ```python
 df =  df.loc[:, ["patient_id","name","birth_date","gender","cpf","rg","rg_issuer","mobile_phone","home_phone","office_phone","email","email_secondary","birth_place","birth_state","zip_code","address","number","complement","neighborhood","city","state","country","picture_filename","ethnicity","marital_status","religion","occupation","education","responsible","cns","died","death_info","nationality","indication","indication_observation","active","receive_email","observation","healthinsurance_pack","patientrelatedness_mother_names","patientrelatedness_father_names","tag_names","tag_physician_id"]]
