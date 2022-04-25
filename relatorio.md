@@ -76,7 +76,8 @@ A seguir será realizada a limpeza e tratamento dos dados.
 
 ### Valores ausentes, valores equivalentes e tratamento inicial
 
-Quando utilizado o método `info()` para ver o resumo dos dados, foi possível ver que muitas colunas tinham muitos dados ausentes, entrentanto, na documentação da iClinic é possível ver que os campos `patient_id` e `name` são obrigatórios e no Dataset anterior as colunas `Código` e `Nome` são seus equivalentes, ainda, estas são as únicas colunas que não tem valores nulos nos seus registros, logo, a priori, não será necessário um maior tratamento para cumprir as condições obrigatórias.
+Quando utilizado o método `info()` para ver o resumo dos dados, foi possível ver que muitas colunas tinham muitos dados ausentes, entrentanto, na documentação da iClinic é possível ver que os campos `Nome` e `birth_date` são obrigatórios e no Dataset anterior as colunas `Nome` e `DataNasc` são seus equivalentes, ainda, a coluna `DataNasc` tem valores nulos nos seus registros, logo, será necessário um tratamento para cumprir as condições obrigatórias.
+Este será um dos últimos passos no tratamento dos dados.
 
 O tratamento de algumas colunas será realizado em seguida, mas quando o tratamento necessário for apenas na mudança nos nomes entre os recursos equivalentes, este será realizada no final, já que não é relevante para o tratamento inicial.
 
@@ -84,28 +85,52 @@ Alguns dos recursos precisarão de uma atenção ou tratamento mais detalhada, s
 
 Além desses recursos, no arquivo lido tem informação adicional que pode ser colocado na coluna "observation", mas devido ao tempo não foi possível de ser concluído, são estas "Conjuge", "ProfissaoConjuge"
 
-### Tratamento do recurso 'Sexo'
- 
+### Trantamento do recurso 'Sexo'
+
+Para tratar esta coluna é necessário saber quais as categorias utilizadas para classificar o genero do paciente no Dataset anterior, assim, utilizaremos a seguinte linha de código:
+
+```python
+df['Sexo'].value_counts()
+```
+
+Obtendo o seguinte output:
+
+```python
+M    329
+F    303
+```
+
+É possível observar os valores equivalentes no padrão iClinic:
+
+- F : femino : f
+- M : masculino : m
+
 Inicialmente foram testadas algumas ideias mais simples, mas não resultaram sendo corretas.
 
 A primeira consistiu em transformar as strings dentro da coluna 'Sexo' em minúscula:
+
 ```python
 df['Sexo'] = df['Sexo'].astype(str).str.lower()
 ```
+
 Porém, os valores 'NaN' eram modificados para 'nan', perdendo o seu significado original.
 
 Outra alternativa foi utilizar list comprehension do próprio python, conseguindo contornar o problema de modificar o valor 'NaN':
+
 ```python
 df['Sexo'] = ['m' if x == 'M' else 'f' if x == 'F' else np.nan for x in df['Sexo']]
 #%timeit 594 µs ± 23.4 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 ```
 
 Finalmente, a seguinte alternativa foi a utilizada pois apresentava uma maior velocidade de processamento quando comparada a anterior.
+
 ```python
 df['Sexo'] = df['Sexo'].replace(sexo)
 #%timeit 694 µs ± 14.4 µs per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
 ```
-sendo:
+
+sendo o dictionary `sexo` definido como a seguir:
+
 ```python
 sexo = {
     'M': 'm', 
@@ -171,7 +196,13 @@ SE    132
 Em seguida é aplicado o seguinte comando para fazer a substituição das categorias:
 
 ```python
-df['EstadoCivil'] = df['EstadoCivil'].replace({'CA': 'ms', 'ES': 'st', 'VI': 'wi','SE': 'se'})
+estadocivil = {
+    'CA': 'ma',
+    'ES': 'st',
+    'VI': 'wi',
+    'SE': 'se'
+}
+df['EstadoCivil'] = df['EstadoCivil'].replace(estadocivil)
 ```
 
 ### Tratamento do recurso 'Cor'
@@ -205,7 +236,14 @@ Neste caso, foi decidido colocar a raça indigena como parda já que ela não po
 Em seguida é aplicado o seguinte comando para fazer a substituição das categorias:
 
 ```python
-df['Cor'] = df['Cor'].replace({'B': 'wh', 'A': 'ye', 'P': 'br','N': 'bl', 'I': 'br'})
+cor = {
+    'B': 'wh',
+    'A': 'ye',
+    'P': 'br',
+    'N': 'bl',
+    'I': 'br'
+}
+df['Cor'] = df['Cor'].replace(cor)
 ```
 
 ### Tratamento do recurso 'Endereco'
@@ -288,7 +326,7 @@ Em seguida será realizada a mudança no nome dos recursos no Dataset anterior p
 ```python
 df = df.rename(
     columns = {
-        "Código":"patient_id",
+        "Código":"patient_code",
         "Nome": "name",
         "DataNasc":"birth_date",
         "Sexo": "gender",
@@ -334,13 +372,20 @@ df['healthinsurance_pack'] = np.nan
 df['tag_names'] = np.nan
 df['tag_physician_id'] = np.nan
 ```
+### Remoção de linhas não contendo as informações necessárias
+
+A seguir, serão removidas as linhas contendo valores nulos na coluna 'birth_date':
+
+```python
+df = df.dropna(subset = ['birth_date'])
+```
 
 ### Remoção de recursos repetidos ou não necessários
 
 A seguir, serão removidos os recursos repetidos ou que não são mais necessários:
 
 ```python
-df =  df.loc[:, ["patient_id","name","birth_date","gender","cpf","rg","rg_issuer","mobile_phone","home_phone","office_phone","email","email_secondary","birth_place","birth_state","zip_code","address","number","complement","neighborhood","city","state","country","picture_filename","ethnicity","marital_status","religion","occupation","education","responsible","cns","died","death_info","nationality","indication","indication_observation","active","receive_email","observation","healthinsurance_pack","patientrelatedness_mother_names","patientrelatedness_father_names","tag_names","tag_physician_id"]]
+df =  df.loc[:, ["patient_code","name","civil_name","birth_date","gender","social_gender","cpf","rg","rg_issuer","mobile_phone","home_phone","office_phone","email","email_secondary","birth_place","birth_state","zip_code","address","number","complement","neighborhood","city","state","country","ethnicity","marital_status","religion","occupation","education","responsible","cns","observation","died","death_info","nationality","indication","indication_observation","active","receive_email","healthinsurance_pack","patientrelatedness_mother_names","patientrelatedness_father_names","tag_names","tag_physician_id","picture_filename"]]
 ```
 
 ## Exportação do arquivo de saída
